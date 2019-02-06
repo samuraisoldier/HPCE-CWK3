@@ -1,0 +1,74 @@
+
+Cloning into 'hpce-2018-cw3-hs2715'...
+Your branch is up-to-date with 'origin/master'.
+commit b2cd7e6cccf3281c75eac8504047ccc590d42cdc
+Author: James Davis <james.davis@imperial.ac.uk>
+Date:   Thu Jan 31 15:05:25 2019 +0000
+
+    Updated opencl_sdk/include. Thanks to @Faboor. Addresses #82.
+hs2715, 0, Have src/hs2715/step_world_v1_lambda.cpp, FAIL
+hs2715, 1, Have src/hs2715/step_world_v1_lambda.cpp, FAIL
+hs2715, 2, Have src/hs2715/step_world_v2_function.cpp, FAIL
+hs2715, 3, Have src/hs2715/step_world_v3_opencl.cpp, FAIL
+hs2715, 4, Have src/hs2715/step_world_v3_kernel.cl, FAIL
+hs2715, 5, Have src/hs2715/step_world_v4_double_buffered.cpp, FAIL
+hs2715, 6, Have src/hs2715/step_world_v5_packed_properties.cpp, FAIL
+hs2715, 7, Have src/hs2715/step_world_v5_kernel.cl or src/hs2715/step_world_v5_packed_properties.cl, FAIL
+0
+(cd ./tmp/hs2715/working && g++ -std=c++14 -O3 -W -Wall -g -I include -I /home/jjd06/hpce-2018-private/scripts/cw3/scripts/include /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/heat.cpp src/hs2715/step_world_v1_lambda.cpp -o step_world_v1_lambda) &> ./tmp/hs2715/log/build_v1_lambda.log
+hs2715, 8, [exists_V1_CPP=0] Compiling step_world_v1_lambda.cpp, FAIL
+hs2715, 9, [exists_V2_CPP=0] Compiling step_world_v2_function.cpp, FAIL
+(cd $WORKING_DIR && $PREPROC src/$SL/step_world_v3_opencl.cpp -o - | $SCRIPTS_DIR/extract_preprocessed_part.pl src/$SL/step_world_v3_opencl.cpp | grep enqueueNDRangeKernel - )
+g++: error: src/hs2715/step_world_v3_opencl.cpp: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+hs2715, 10, Checking step_world_v3_opencl actually enqueues a kernel., FAIL
+hs2715, 11, [exists_V3_CPP=0] Compiling step_world_v3_opencl.cpp, FAIL
+(cd $WORKING_DIR && $PREPROC src/$SL/step_world_v4_double_buffered.cpp -o - | $SCRIPTS_DIR/extract_preprocessed_part.pl src/$SL/step_world_v4_double_buffered.cpp | grep enqueueBarrierWithWaitList - )
+g++: error: src/hs2715/step_world_v4_double_buffered.cpp: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+hs2715, 12, Checking step_world_v4_double_buffered uses a barrier., FAIL
+hs2715, 13, [exists_V4_CPP=0] Compiling step_world_v4_double_buffered.cpp, FAIL
+hs2715, 14, [exists_V5_CPP=0] Compiling step_world_v5_packed_properties.cpp, FAIL
+Loaded world with w=256, h=256
+Stepping by dt=0.1 for n=1
+(cd ./tmp/hs2715/working && (cat test_15.input | ./step_world_v1_lambda > test_15.got) && (cat test_15.got | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/compare_worlds test_15.ref) ) &> ./tmp/hs2715/log/test_15.log
+hs2715, 15, Check output of step_world_v1_lambda for one time step versus reference., FAIL
+(cd ./tmp/hs2715/working && /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 256 256 | ./step_world_v1_lambda | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/compare_worlds <(/home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 256 256 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/step_world)) &> ./tmp/hs2715/log/test_16.log
+hs2715, 16, Check output of step_world_v1_lambda for one time step versus reference., FAIL
+(cd ./tmp/hs2715/working && /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 100 200 | ./step_world_v1_lambda 0.5 4 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/compare_worlds <(/home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 100 200 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/step_world 0.5 4)) &> ./tmp/hs2715/log/test_17.log
+hs2715, 17, Check output of step_world_v1_lambda for four time steps versus reference., FAIL
+(cd ./tmp/hs2715/working && /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 256 256 | ./step_world_v2_function | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/compare_worlds <(/home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 256 256 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/step_world)) &> ./tmp/hs2715/log/test_18.log
+hs2715, 18, Check output of step_world_v2_function for one time step versus reference., FAIL
+(cd ./tmp/hs2715/working && /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 100 200 | ./step_world_v2_function 0.5 4 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/compare_worlds <(/home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 100 200 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/step_world 0.5 4)) &> ./tmp/hs2715/log/test_19.log
+hs2715, 19, Check output of step_world_v2_function for four time steps versus reference., FAIL
+(cd ./tmp/hs2715/working && /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 64 64 | ./step_world_v3_opencl | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/compare_worlds <(/home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 64 64 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/step_world )) &> ./tmp/hs2715/log/test_20.log
+hs2715, 20, Check output of step_world_v3_opencl for one time step versus reference., FAIL
+(cd ./tmp/hs2715/working && /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 300 60 | ./step_world_v3_opencl 0.2 8 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/compare_worlds <(/home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 300 60 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/step_world 0.2 8 )) &> ./tmp/hs2715/log/test_21.log
+hs2715, 21, Check output of step_world_v3_opencl for eight time steps versus reference., FAIL
+(cd ./tmp/hs2715/working && /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 64 64 | ./step_world_v4_double_buffered | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/compare_worlds <(/home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 64 64 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/step_world )) &> ./tmp/hs2715/log/test_22.log
+hs2715, 22, Check output of step_world_v4_double_buffered for one time step versus reference., FAIL
+(cd ./tmp/hs2715/working && /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 300 60 | ./step_world_v4_double_buffered 0.3 8 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/compare_worlds <(/home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 300 60 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/step_world 0.3 8 )) &> ./tmp/hs2715/log/test_23.log
+hs2715, 23, Check output of step_world_v4_double_buffered for eight time steps versus reference., FAIL
+(cd ./tmp/hs2715/working && /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 64 64 | ./step_world_v5_packed_properties | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/compare_worlds <(/home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 64 64 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/step_world )) &> ./tmp/hs2715/log/test_24.log
+hs2715, 24, Check output of step_world_v5_packed_properties for one time step versus reference., FAIL
+(cd ./tmp/hs2715/working && /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 50 90 | ./step_world_v5_packed_properties 0.4 10 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/compare_worlds <(/home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/make_world 50 90 | /home/jjd06/hpce-2018-private/scripts/cw3/scripts/src/step_world 0.4 10 )) &> ./tmp/hs2715/log/test_25.log
+hs2715, 25, Check output of step_world_v5_packed_properties for ten time steps versus reference., FAIL
+/usr/bin/time: cannot run ./step_world_v3_opencl: No such file or directory
+/usr/bin/time: cannot run ./step_world_v4_double_buffered: No such file or directory
+/usr/bin/time: cannot run ./step_world_v5_packed_properties: No such file or directory
+true
+(standard_in) 1: syntax error
+(standard_in) 1: syntax error
+(standard_in) 1: syntax error
+(standard_in) 1: syntax error
+hs2715, 26, For n=256, steps=2048: Check time for v3 (Command exited with non-zero status 127 0.00) is more than 1.2 x v4 (Command exited with non-zero status 127 0.00), FAIL
+true
+(standard_in) 1: syntax error
+(standard_in) 1: syntax error
+(standard_in) 1: syntax error
+(standard_in) 1: syntax error
+hs2715, 27, For n=256, steps=2048: Check time for v4 (Command exited with non-zero status 127 0.00) is more than 1.01 (updated) x v5 (Command exited with non-zero status 127 0.00), FAIL
+
+Passed 0 out of 28 tests.
