@@ -5,7 +5,7 @@ CPPFLAGS += -O3
 
 # LDLIBS += -lOpenCL
 
-all : bin/make_world bin/render_world bin/step_world bin/hs2715/step_world_v1_lambda bin/hs2715/StepWorldV2Function bin/hs2715/StepWorldV3OpenCL 
+all : bin/make_world bin/render_world bin/step_world bin/hs2715/step_world_v1_lambda bin/hs2715/StepWorldV2Function bin/hs2715/StepWorldV3OpenCL bin/hs2715/StepWorldV4DoubleBuffered
 
 bin/% : src/%.cpp src/heat.cpp
 	mkdir -p $(dir $@)
