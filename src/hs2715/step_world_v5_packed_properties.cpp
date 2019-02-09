@@ -154,7 +154,7 @@ void StepWorldV5PackedProperties(world_t &world, float dt, unsigned n)
 	}	
 	
 	size_t cbBuffer=4*world.w*world.h;
-	cl::Buffer buffProperties(context, CL_MEM_READ_WRITE, cbBuffer);
+	cl::Buffer buffProperties(context, CL_MEM_READ_ONLY, cbBuffer);
 	cl::Buffer buffState(context, CL_MEM_READ_WRITE, cbBuffer);
 	cl::Buffer buffBuffer(context, CL_MEM_READ_WRITE, cbBuffer);
 
@@ -182,19 +182,19 @@ void StepWorldV5PackedProperties(world_t &world, float dt, unsigned n)
 			if(!( (world.properties[index] & Cell_Fixed) || (world.properties[index] & Cell_Insulator) ) ){
 				//Cell above
 				if( (world.properties[index-w] & Cell_Insulator) ){
-					packed[index] = packed[index] + 4;
+					packed[index] += 4;
 				}
-				//Cell bellow 
+				//Cell below 
 				if( (world.properties[index+w] & Cell_Insulator) ){
-					packed[index] = packed[index] + 8; 
+					packed[index] += 8; 
 				}
 				//Cell left 
 				if( (world.properties[index-1] & Cell_Insulator) ){
-					packed[index] = packed[index] + 16;
+					packed[index]+= 16;
 				}
 				//Cell right
 				if( (world.properties[index+1] & Cell_Insulator) ){
-					packed[index] = packed[index] + 32;
+					packed[index] +=32;
 				}
 			}
 		}
@@ -204,6 +204,7 @@ void StepWorldV5PackedProperties(world_t &world, float dt, unsigned n)
 	
 	// This is our temporary working space
 	std::vector<float> buffer(w*h);
+	
 	
 	queue.enqueueWriteBuffer(buffState, CL_TRUE, 0, cbBuffer, &world.state[0], NULL);
 	
@@ -234,6 +235,7 @@ void StepWorldV5PackedProperties(world_t &world, float dt, unsigned n)
 		world.t += dt; // We have moved the world forwards in time
 		
 	} // end of for(t...
+	queue.enqueueReadBuffer(buffState, CL_TRUE, 0, cbBuffer, &world.state[0]); //read buffState into output 
 }
 
 }; // namepspace hs2715	

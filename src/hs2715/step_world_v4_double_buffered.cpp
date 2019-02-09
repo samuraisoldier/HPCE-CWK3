@@ -154,7 +154,7 @@ void StepWorldV4DoubleBuffered(world_t &world, float dt, unsigned n)
 	}	
 	
 	size_t cbBuffer=4*world.w*world.h;
-	cl::Buffer buffProperties(context, CL_MEM_READ_WRITE, cbBuffer);
+	cl::Buffer buffProperties(context, CL_MEM_READ_ONLY, cbBuffer);
 	cl::Buffer buffState(context, CL_MEM_READ_WRITE, cbBuffer);
 	cl::Buffer buffBuffer(context, CL_MEM_READ_WRITE, cbBuffer);
 
@@ -205,6 +205,7 @@ void StepWorldV4DoubleBuffered(world_t &world, float dt, unsigned n)
 		world.t += dt; // We have moved the world forwards in time
 		
 	} // end of for(t...
+queue.enqueueReadBuffer(buffState, CL_TRUE, 0, cbBuffer, &world.state[0]); //read buffState into output 
 }
 
 }; // namepspace hs2715	

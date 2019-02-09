@@ -13,7 +13,6 @@ __kernel void kernel_xy(
 	uint y=get_global_id(1);
 	uint w=get_global_size(0);
 	
-	unsigned index=y*w + x;
 
 	
 	enum cell_flags_t{
@@ -21,13 +20,8 @@ __kernel void kernel_xy(
 		Cell_Insulator	=0x2
 	};
 
+	unsigned index=y*w + x;
 	uint myProps = world_properties[index];	
-	
-	// Cell above
-	//if(myProps & 0x4) {
-	//	contrib += outer;
-		//acc += outer * world_state[index-w];
-	//}
 
 	
 	if((myProps & Cell_Fixed) || (myProps & Cell_Insulator)){
