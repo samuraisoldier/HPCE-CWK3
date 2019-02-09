@@ -53,7 +53,7 @@ __kernel void kernel_xy(
 		
 		
 		// Cell left
-		if(myProps & 0x10)) {
+		if(myProps & 0x10) {
 			contrib += outer;
 			acc += outer * world_state[index-1];
 		}

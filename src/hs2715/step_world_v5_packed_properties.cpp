@@ -205,7 +205,7 @@ void StepWorldV5PackedProperties(world_t &world, float dt, unsigned n)
 	// This is our temporary working space
 	std::vector<float> buffer(w*h);
 	
-	queue.enqueueWriteBuffer(buffState, CL_TRUE, 0, cbBuffer, &p[0], NULL);
+	queue.enqueueWriteBuffer(buffState, CL_TRUE, 0, cbBuffer, &world.state[0], NULL);
 	
 	for(unsigned t=0;t<n;t++){
 		
