@@ -135,14 +135,12 @@ void StepWorldV3OpenCL(world_t &world, float dt, unsigned n)
 	
 	cl::Context context(devices);
 	
-	std::string kernelSource=LoadSource("step_world_v3_kernel.cl");
+	std::string kernelSource=hpce::hs2715::LoadSource("step_world_v3_kernel.cl");
 
 	cl::Program::Sources sources;	// A vector of (data,length) pairs
 	sources.push_back(std::make_pair(kernelSource.c_str(), kernelSource.size()+1));	// push on our single string
 
 	cl::Program program(context, sources);
-
-
 	try{
 		program.build(devices);
 	}catch(...){
@@ -172,6 +170,8 @@ void StepWorldV3OpenCL(world_t &world, float dt, unsigned n)
 	kernel.setArg(4, buffBuffer);
 	
 	cl::CommandQueue queue(context, device);
+	
+	queue.enqueueWriteBuffer(buffProperties, CL_TRUE, 0, cbBuffer, &world.properties[0]);
 	
 	// This is our temporary working space
 	std::vector<float> buffer(w*h);
