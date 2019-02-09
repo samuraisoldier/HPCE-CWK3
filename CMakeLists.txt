@@ -74,8 +74,8 @@ target_link_libraries(step_world ${OPENCL_SDK_LIB})
 ##
 ## ==============================================================================
 
-## TODO : Change this param to your IC username
-set(LOGIN_ID "<your_login>")
+
+set(LOGIN_ID "hs2715")
 
 set(USR_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/${LOGIN_ID})
 file(GLOB USR_SRC RELATIVE ${USR_SRC_DIR} ${USR_SRC_DIR}/*.cpp)
