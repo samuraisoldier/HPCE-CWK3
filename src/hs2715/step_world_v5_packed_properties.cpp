@@ -13,7 +13,9 @@
 #define __CL_ENABLE_EXCEPTIONS
 #include "CL/cl.hpp"
 
+
 namespace hpce{
+
 namespace hs2715{	
 
 //! Reference world stepping program
@@ -94,16 +96,23 @@ std::string LoadSource(const char *fileName)
 
 void StepWorldV5PackedProperties(world_t &world, float dt, unsigned n)
 {
+	unsigned w=world.w, h=world.h;
+	
+	float outer=world.alpha*dt;		// We spread alpha to other cells per time
+	float inner=1-outer/4;				// Anything that doesn't spread stays
+	
 	std::vector<cl::Platform> platforms;
 	cl::Platform::get(&platforms);
 	if(platforms.size()==0){
 		throw std::runtime_error("No OpenCL platforms found.");
 	}
+	
 	std::cerr<<"Found "<<platforms.size()<<" platforms\n";
 	for(unsigned i=0;i<platforms.size();i++){
 		std::string vendor=platforms[i].getInfo<CL_PLATFORM_VENDOR>();
 		std::cerr<<"  Platform "<<i<<" : "<<vendor<<"\n";
 	}
+	
 	
 	int selectedPlatform=0;
 	if(getenv("HPCE_SELECT_PLATFORM")){
@@ -112,11 +121,14 @@ void StepWorldV5PackedProperties(world_t &world, float dt, unsigned n)
 	std::cerr<<"Choosing platform "<<selectedPlatform<<"\n";
 	cl::Platform platform=platforms.at(selectedPlatform);   		
 	
+	
 	std::vector<cl::Device> devices;
 	platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);	
 	if(devices.size()==0){
 		throw std::runtime_error("No opencl devices found.\n");
 	}
+		
+		
 		
 	std::cerr<<"Found "<<devices.size()<<" devices\n";
 	for(unsigned i=0;i<devices.size();i++){
@@ -153,17 +165,15 @@ void StepWorldV5PackedProperties(world_t &world, float dt, unsigned n)
 		throw;
 	}	
 	
+	
 	size_t cbBuffer=4*world.w*world.h;
-	cl::Buffer buffProperties(context, CL_MEM_READ_ONLY, cbBuffer);
+	cl::Buffer buffProperties(context, CL_MEM_READ_WRITE, cbBuffer);
 	cl::Buffer buffState(context, CL_MEM_READ_WRITE, cbBuffer);
 	cl::Buffer buffBuffer(context, CL_MEM_READ_WRITE, cbBuffer);
 
 	cl::Kernel kernel(program, "kernel_xy");
 	
-	unsigned w=world.w, h=world.h;
-	
-	float outer=world.alpha*dt;		// We spread alpha to other cells per time
-	float inner=1-outer/4;				// Anything that doesn't spread stays
+
 	
 	kernel.setArg(0, inner);
 	kernel.setArg(1, outer);
@@ -174,27 +184,27 @@ void StepWorldV5PackedProperties(world_t &world, float dt, unsigned n)
 	
 	std::vector<uint32_t> packed(w*h, 0);
 	
-		for(unsigned y=0;y<h;y++){
+	for(unsigned y=0;y<h;y++){
 		for(unsigned x=0;x<w;x++){
 			unsigned index=x+y*w;
 			packed[index] = world.properties[index]; //packed(x,y) = world.properties(x,y)
 
 			if(!( (world.properties[index] & Cell_Fixed) || (world.properties[index] & Cell_Insulator) ) ){
 				//Cell above
-				if( (world.properties[index-w] & Cell_Insulator) ){
+				if( (world.properties[index+1] & Cell_Insulator) ){
 					packed[index] += 4;
 				}
 				//Cell below 
-				if( (world.properties[index+w] & Cell_Insulator) ){
+				if( (world.properties[index-1] & Cell_Insulator) ){
 					packed[index] += 8; 
 				}
 				//Cell left 
-				if( (world.properties[index-1] & Cell_Insulator) ){
-					packed[index]+= 16;
+				if( (world.properties[index+w] & Cell_Insulator) ){
+					packed[index]+= 12;
 				}
 				//Cell right
-				if( (world.properties[index+1] & Cell_Insulator) ){
-					packed[index] +=32;
+				if( (world.properties[index-w] & Cell_Insulator) ){
+					packed[index] +=16;
 				}
 			}
 		}
@@ -209,16 +219,10 @@ void StepWorldV5PackedProperties(world_t &world, float dt, unsigned n)
 	queue.enqueueWriteBuffer(buffState, CL_TRUE, 0, cbBuffer, &world.state[0], NULL);
 	
 	for(unsigned t=0;t<n;t++){
-		
-		//cl::Event evCopiedState;
-		
-		
 		cl::NDRange offset(0, 0);				// Always start iterations at x=0, y=0
 		cl::NDRange globalSize(w, h);	// Global size must match the original loops
 		cl::NDRange localSize=cl::NullRange;	// We don't care about local size
 
-		//std::vector<cl::Event> kernelDependencies(1, evCopiedState);
-		//cl::Event evExecutedKernel;
 		
 		kernel.setArg(3, buffState);
 		kernel.setArg(4, buffBuffer);
@@ -259,7 +263,6 @@ int main(int argc, char *argv[])
 	}
 	
 	try{
-		
 		hpce::world_t world=hpce::LoadWorld(std::cin);
 		std::cerr<<"Loaded world with w="<<world.w<<", h="<<world.h<<std::endl;
 		
@@ -274,4 +277,3 @@ int main(int argc, char *argv[])
 		
 	return 0;
 }
-
