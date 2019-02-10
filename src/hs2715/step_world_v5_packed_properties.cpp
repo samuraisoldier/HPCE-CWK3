@@ -24,7 +24,7 @@ namespace hs2715{
 	\note Overall time increment will be n*dt
 */
 
-void kernel_xy(uint32_t x, uint32_t y, uint32_t w, const float *world_state, float *buffer, float inner, float outer, const uint32_t *world_properties ){
+void kernel_xy(uint32_t x, uint32_t y, uint32_t w, const float *world_state, float * er, float inner, float outer, const uint32_t *world_properties ){
 
 	unsigned index=y*w + x;
 	
@@ -191,19 +191,19 @@ void StepWorldV5PackedProperties(world_t &world, float dt, unsigned n)
 
 			if(!( (world.properties[index] & Cell_Fixed) || (world.properties[index] & Cell_Insulator) ) ){
 				//Cell above
-				if( (world.properties[index+1] & Cell_Insulator) ){
+				if( (world.properties[index-w] & Cell_Insulator) ){
 					packed[index] += 4;
 				}
 				//Cell below 
-				if( (world.properties[index-1] & Cell_Insulator) ){
+				if( (world.properties[index+w] & Cell_Insulator) ){
 					packed[index] += 8; 
 				}
 				//Cell left 
-				if( (world.properties[index+w] & Cell_Insulator) ){
+				if( (world.properties[index-1] & Cell_Insulator) ){
 					packed[index]+= 12;
 				}
 				//Cell right
-				if( (world.properties[index-w] & Cell_Insulator) ){
+				if( (world.properties[index+1] & Cell_Insulator) ){
 					packed[index] +=16;
 				}
 			}

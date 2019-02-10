@@ -33,28 +33,28 @@ __kernel void kernel_xy(
 		
 		
 		// Cell above
-		if(myProps & 0x4) {
+		if(! (myProps & 0x4)) {
 			contrib += outer;
 			acc += outer * world_state[index-w];
 		}
 		
 		
 		// Cell below
-		if(myProps & 0x8) {
+		if(! (myProps & 0x8) ){
 			contrib += outer;
 			acc += outer * world_state[index+w];
 		}
 		
 		
 		// Cell left
-		if(myProps & 0x10) {
+		if(! (myProps & 0xC) ){
 			contrib += outer;
 			acc += outer * world_state[index-1];
 		}
 		
 		
 		// Cell right
-		if(myProps & 0x20) {
+		if(! (myProps & 0x10)) {
 			contrib += outer;
 			acc += outer * world_state[index+1];
 		}
@@ -65,6 +65,6 @@ __kernel void kernel_xy(
 		res=min(1.0f, max(0.0f, res));
 		buffer[index] = res;
 		
-	} // end of if(insulator){ ... } else {	
+	} 
 	
 } //end of kernel_xy fn
