@@ -24,7 +24,7 @@ namespace hs2715{
 	\note Overall time increment will be n*dt
 */
 
-void kernel_xy(uint32_t x, uint32_t y, uint32_t w, const float *world_state, float * er, float inner, float outer, const uint32_t *world_properties ){
+void kernel_xy(uint32_t x, uint32_t y, uint32_t w, const float *world_state, float * er, float inner, float outer, const uint32_t *world_properties,float *buffer ){
 
 	unsigned index=y*w + x;
 	
