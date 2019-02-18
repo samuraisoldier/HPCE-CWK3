@@ -1,0 +1,31 @@
+
+hs2715, 0, Have src/hs2715/step_world_v1_lambda.cpp, PASS
+hs2715, 1, Have src/hs2715/step_world_v1_lambda.cpp, PASS
+hs2715, 2, Have src/hs2715/step_world_v2_function.cpp, PASS
+hs2715, 3, Have src/hs2715/step_world_v3_opencl.cpp, PASS
+hs2715, 4, Have src/hs2715/step_world_v3_kernel.cl, PASS
+hs2715, 5, Have src/hs2715/step_world_v4_double_buffered.cpp, PASS
+hs2715, 6, Have src/hs2715/step_world_v5_packed_properties.cpp, PASS
+hs2715, 7, Have src/hs2715/step_world_v5_packed_properties.cl, PASS
+hs2715, 8, Compiling step_world_v1_lambda.cpp, PASS
+hs2715, 9, Compiling step_world_v2_function.cpp, PASS
+hs2715, 10, Checking step_world_v3_opencl actually enqueues a kernel., PASS
+hs2715, 11, Compiling step_world_v3_opencl.cpp, PASS
+hs2715, 12, Checking step_world_v4_double_buffered uses a barrier., PASS
+hs2715, 13, Compiling step_world_v4_double_buffered.cpp, PASS
+hs2715, 14, Compiling step_world_v5_packed_properties.cpp, PASS
+hs2715, 15, Check output of step_world_v1_lambda for one time step versus reference., PASS
+hs2715, 16, Check output of step_world_v1_lambda for one time step versus reference., PASS
+hs2715, 17, Check output of step_world_v1_lambda for four time steps versus reference., PASS
+hs2715, 18, Check output of step_world_v2_function for one time step versus reference., PASS
+hs2715, 19, Check output of step_world_v2_function for four time steps versus reference., PASS
+hs2715, 20, Check output of step_world_v3_opencl for one time step versus reference., PASS
+hs2715, 21, Check output of step_world_v3_opencl for eight time steps versus reference., PASS
+hs2715, 22, Check output of step_world_v4_double_buffered for one time step versus reference., PASS
+hs2715, 23, Check output of step_world_v4_double_buffered for eight time steps versus reference., PASS
+hs2715, 24, Check output of step_world_v5_packed_properties for one time step versus reference., FAIL
+hs2715, 25, Check output of step_world_v5_packed_properties for ten time steps versus reference., FAIL
+hs2715, 26, For n=256, steps=2048: Check time for v3 (0.40) is more than 1.2 x v4 (0.29), PASS
+hs2715, 27, For n=256, steps=2048: Check time for v4 (0.29) is more than 1.01 (updated) x v5 (0.34), FAIL
+
+Passed 25 out of 28 tests.

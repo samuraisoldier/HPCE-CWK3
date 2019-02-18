@@ -1,0 +1,7 @@
+src/hs2715/step_world_v5_packed_properties.cpp:12:0: warning: "CL_USE_DEPRECATED_OPENCL_1_2_APIS" redefined
+ #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
+ ^
+<command-line>:0:0: note: this is the location of the previous definition
+src/hs2715/step_world_v5_packed_properties.cpp:27:86: warning: unused parameter ‘er’ [-Wunused-parameter]
+ void kernel_xy(uint32_t x, uint32_t y, uint32_t w, const float *world_state, float * er, float inner, float outer, const uint32_t *world_properties,float *buffer ){
+                                                                                      ^
